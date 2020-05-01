@@ -6,23 +6,21 @@ from flask import Flask, json, render_template
 from UserPresenceService import DevicePresenceService
 
 api = Flask(__name__)
+devpre = DevicePresenceService()
 
 @api.route('/user_device',methods = ['GET'])
 def get_user_devices():
-    devpre = DevicePresenceService()
     devices = devpre.get_devices()
     return json.dumps(devices)
 
 @api.route('/user_device_online',methods = ['GET'])
 def get_user_devices_online():
-    devpre = DevicePresenceService()
     devices = devpre.get_userdevices()
     devices = list(filter(lambda x: x["status"] == "Online",devices))
     return json.dumps(devices)
 
 @api.route('/users_online',methods = ['GET'])
 def get_userdevices_online():
-    devpre = DevicePresenceService()
     devices = devpre.get_userdevices()
     devices = list(filter(lambda x: x["status"] == "Online", devices))
     devices.sort(key= lambda d: d["userrel"])

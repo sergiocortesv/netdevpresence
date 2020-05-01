@@ -17,7 +17,7 @@ class RouterInfoClient:
     def login(self,username, password):
         rand = self.get_rand_count()
         loginform = OrderedDict([('UserName', 'root'),
-                                 ('PassWord', 'R3VhZ3VleV8yNTY)'),
+                                 ('PassWord', '********'),
                                  ('x.X_HW_Token', str(rand))])
         login_headers = {"Referer": self.SERVICE_HOST_URL+ "/",
                          "Cookie": "Cookie=body:Language:english:id=-1"}
