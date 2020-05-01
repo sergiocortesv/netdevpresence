@@ -22,6 +22,7 @@ class DevicePresenceService:
         userdev_rel = self.load_userdev_rel()
         print(type(userdev_rel))
         for device in devices:
+            device["userrel"] = ""
             if device["macaddress"] in userdev_rel:
                 device["userrel"] = userdev_rel[device["macaddress"]]
         return devices
