@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Router Online User List</title>
+</head>
+<body>
+    <h3>Online User List</h3>
+    <table>
+        <tr>
+            <th>IP Address</th>
+            <th>Mac Address</th>
+            <th>Device Name</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>{{user.ipaddress}}</td>
+                <td>{{user.macaddress}}</td>
+                <td>{{user.userrel}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </ol>
+</body>
+</html>
