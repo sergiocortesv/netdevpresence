@@ -1,12 +1,15 @@
 """DHCP Device presence service
    Provides a list of IPs of devices connected to the HG8245 Router
 """
+import configparser
 from RouterInfoClient import RouterInfoClient
 from flask import Flask, json, render_template
 from UserPresenceService import DevicePresenceService
 
+config = configparser.ConfigParser()
+config.read("netdevpresence.ini")
+devpre = DevicePresenceService(config)
 api = Flask(__name__)
-devpre = DevicePresenceService()
 
 @api.route('/user_device',methods = ['GET'])
 def get_user_devices():
@@ -27,4 +30,5 @@ def get_userdevices_online():
     return render_template('users_online.html',users=devices)
 
 if __name__ == '__main__':
-    api.run(host='0.0.0.0')
+    api.run(host=config['DEFAUL']['listenhost'])
+

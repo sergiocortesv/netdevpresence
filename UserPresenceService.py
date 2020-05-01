@@ -4,23 +4,25 @@ import re
 class DevicePresenceService:
     """Parses lanuserinfo from router"""
 
+    def __init__(self,config):
+        self.config = config
+
+    # TODO inject RouterInfoClient
     def get_devices(self):
         rclient = RouterInfoClient()
-        loginCookie = rclient.login("","")
+        loginCookie = rclient.login(self.config['DEFAULT']['routerusername'],self.config['DEFAULT']['routerpassword'])
         lanuser_str = rclient.get_lanuser_info(loginCookie)
         user_devices = re.split(r'new USERDevice', lanuser_str[0])
         user_devices_list = []
         for usr_dev in user_devices:
             if usr_dev != "":
                 devmap = self.build_devmap(usr_dev)
-                print(devmap)
                 user_devices_list.append(devmap)
         return user_devices_list
 
     def get_userdevices(self):
         devices = self.get_devices()
         userdev_rel = self.load_userdev_rel()
-        print(type(userdev_rel))
         for device in devices:
             device["userrel"] = ""
             if device["macaddress"] in userdev_rel:
