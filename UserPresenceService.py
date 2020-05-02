@@ -4,14 +4,12 @@ import re
 class DevicePresenceService:
     """Parses lanuserinfo from router"""
 
-    def __init__(self,config):
+    def __init__(self,routerclient,config):
+        self.rclient = routerclient
         self.config = config
 
-    # TODO inject RouterInfoClient
     def get_devices(self):
-        rclient = RouterInfoClient()
-        loginCookie = rclient.login(self.config['DEFAULT']['routerusername'],self.config['DEFAULT']['routerpassword'])
-        lanuser_str = rclient.get_lanuser_info(loginCookie)
+        lanuser_str = self.rclient.get_lanuser_info()
         user_devices = re.split(r'new USERDevice', lanuser_str[0])
         user_devices_list = []
         for usr_dev in user_devices:
@@ -22,11 +20,10 @@ class DevicePresenceService:
 
     def get_userdevices(self):
         devices = self.get_devices()
-        userdev_rel = self.load_userdev_rel()
         for device in devices:
             device["userrel"] = ""
-            if device["macaddress"] in userdev_rel:
-                device["userrel"] = userdev_rel[device["macaddress"]]
+            if device["macaddress"] in self.config['DEVICEREL']:
+                device["userrel"] = self.config['DEVICEREL'][device["macaddress"]]
         return devices
 
     def build_devmap(self,userdevstr):
@@ -40,11 +37,3 @@ class DevicePresenceService:
         device["link"] = re.sub(r"\"","",usrdev_comps[7])
         device["name"] = re.sub(r"\"","",usrdev_comps[9])
         return device
-
-    def load_userdev_rel(self):
-        userdev_rel = {}
-        with open("userdevice_rel.dat") as userdev_file:
-            for userdev_line in userdev_file:
-                (key, val) = userdev_line.split("=")
-                userdev_rel[key] = val
-        return userdev_rel

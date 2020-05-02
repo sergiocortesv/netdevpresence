@@ -6,9 +6,10 @@ from RouterInfoClient import RouterInfoClient
 from flask import Flask, json, render_template
 from UserPresenceService import DevicePresenceService
 
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(delimiters="=")
 config.read("netdevpresence.ini")
-devpre = DevicePresenceService(config)
+rclient = RouterInfoClient(config)
+devpre = DevicePresenceService(rclient,config)
 api = Flask(__name__)
 
 @api.route('/user_device',methods = ['GET'])
@@ -30,5 +31,5 @@ def get_userdevices_online():
     return render_template('users_online.html',users=devices)
 
 if __name__ == '__main__':
-    api.run(host=config['DEFAUL']['listenhost'])
+    api.run(host=config['DEFAULT']['listenhost'])
 
